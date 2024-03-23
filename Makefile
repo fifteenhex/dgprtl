@@ -1,8 +1,4 @@
-%.vvp: %.v %_test.v
-	iverilog -g2005-sv -o $@ $^
-
-%.vcd: %.vvp
-	vvp $<
+include common.mk
 
 .PHONY: resetgenerator_test
 resetgenerator_test: resetgenerator.vvp
