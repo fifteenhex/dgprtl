@@ -5,8 +5,8 @@ module latchingcounter
 (
     input logic clk,
     input logic rst,
-    output logic [31:0] count,
-    output logic [31:0] counter
+    output logic [31:0] count = 0,
+    output logic [31:0] counter = 0
 );
 
     always @(posedge clk) begin
