@@ -9,9 +9,9 @@ module resetgenerator (
     output logic rst_out
 );
 
-reg [16:0] counter;
+reg [16:0] counter = '0;
 
-assign rst_out = counter[16];
+assign rst_out = ~counter[16];
 
 always @(posedge clk) begin
     if (rst_in)
