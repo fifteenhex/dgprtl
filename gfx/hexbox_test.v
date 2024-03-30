@@ -4,6 +4,7 @@ module hexbox_test
 );
 
 reg clk;
+reg enable;
 reg [31:0] value;
 reg [5:0] x;
 reg [3:0] y;
@@ -11,6 +12,7 @@ reg pixel;
 
 hexbox uut (
     .clk(clk),
+    .enable(enable),
     .value(value),
     .x(x),
     .y(y),
@@ -25,6 +27,7 @@ initial begin
     $dumpvars(0, uut);
 
     clk <= 0;
+    enable <= 1;
     value <= 32'habcd1234;
     x <= 0;
     y <= 0;

@@ -1,7 +1,10 @@
 module fontrom
 (
     input logic clk,
+    input enable,
+    input next,
     input logic [11:0] addr,
+    input logic [11:0] next_addr,
     output logic [7:0] data
 );
 
@@ -11,12 +14,12 @@ module fontrom
     pROM bram_prom_0 (
         .DO({data_discard, data}),
         .CLK(clk),
-        .OCE('1),
-        .CE('1),
+        .OCE(next),
+        .CE(enable),
         .RESET('0),
-        .AD({addr[10:0],3'b000})
+        .AD({next_addr[10:0],3'b000})
     );
-    defparam bram_prom_0.READ_MODE=1'b0;
+    defparam bram_prom_0.READ_MODE=1'b1; // pipelined
     defparam bram_prom_0.BIT_WIDTH = 8;
     defparam bram_prom_0.RESET_MODE="ASYNC";
 
