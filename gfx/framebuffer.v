@@ -22,14 +22,34 @@ module framebuffer
     output logic out_data
 );
 
-    reg [3:0] in_bank;
-    wire logic [2:0] in_block;
-    wire logic [11:0] in_addr;
+    localparam IN_ADDR_UNITS = ((16 * 1024) / WIDTH_IN);
+    localparam IN_ADDR_WIDTH = $clog2(IN_ADDR_UNITS);
+    localparam IN_ADDR_LINE_WIDTH = $clog2(1024 / WIDTH_IN);
+
+
     reg [3:0] out_bank;
     wire logic [2:0] out_block;
     wire logic [13:0] out_addr;
     wire logic [3:0] out_bank_data [7:0];
 
+    
+    wire [3:0] in_bank;
+    wire logic [2:0] in_block;
+    wire logic [IN_ADDR_WIDTH - 1:0] in_addr;
+
+    framebuffer_xy2addr 
+    #(
+        .WIDTH_IN(WIDTH_IN)
+    )
+    xy2addr_in
+    (
+        .x(in_x),
+        .y(in_y),
+        .bank(in_bank),
+        .block(in_block),
+        .addr(in_addr)
+    );
+    
     genvar i;
     genvar j;
     generate
@@ -54,16 +74,6 @@ module framebuffer
         end
     endgenerate
 
-    always @(posedge in_clk) begin
-        // 4 banks of BRAM banks
-        case (in_y[8:7])
-            2'b00: in_bank <= 4'b0001;
-            2'b01: in_bank <= 4'b0010;
-            2'b10: in_bank <= 4'b0100;
-            2'b11: in_bank <= 4'b1000;
-        endcase        
-    end
-
     always @(posedge out_clk) begin
         // 4 banks of BRAM banks
         case (out_y[8:7])
@@ -73,15 +83,6 @@ module framebuffer
             2'b11: out_bank <= 4'b1000;
         endcase        
     end
-
-    // 8 BRAMs per bank
-    assign in_block = in_y[6:4];
-    /* 
-     * There are 16Kbit per bram, so 16 1024 pixel lines
-     * this means that the bottom four bits of the current in y
-     * select the line in a single bram */
-    assign in_addr[11:8] = in_y[3:0];
-    assign in_addr[7:0] = in_x[9:2];
 
     assign out_block = out_y[6:4];
     assign out_addr[13:10] = out_y[3:0];
