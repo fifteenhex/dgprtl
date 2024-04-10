@@ -5,9 +5,10 @@ module bramwrapper_singleport
 )
 (
     input logic clk,
-    input logic enable,
-    input logic [2:0] block,
-    input logic [11:0] addr,
+    input logic enable = 0,
+    input logic write = 0,
+    input logic [2:0] block = 0,
+    input logic [10:0] addr,
     input logic [WIDTH - 1:0] data_in,
     output logic [WIDTH - 1:0] data_out
 );
@@ -23,10 +24,12 @@ module bramwrapper_singleport
     ) bram (
         .CLK(clk),
         .CE(enable),
-        .AD({addr, 2'b00}),
+        .OCE(1'b1),
+        .AD({addr[10:1], 4'b0000}),
         .BLKSEL(block),
-        .DI({{(31 - WIDTH){1'b0}}, data_in}),
-        .DO({do_discard,data_out})
+        .DI({{(32 - WIDTH){1'b0}}, data_in}),
+        .DO({do_discard,data_out}),
+        .WRE(write)
     );
 
 endmodule
