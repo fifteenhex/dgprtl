@@ -14,7 +14,8 @@ module textbox
     input logic [$clog2(SCREEN_WIDTH) - 1:0] x,
     input logic [$clog2(SCREEN_HEIGHT) - 1:0] y,
     input logic [7:0] chars[0:COLS - 1],
-    output logic pixel
+    output logic pixel,
+    output logic active
 );
 
     /* A window to handle where this renders */
@@ -87,5 +88,7 @@ module textbox
         .next_char(next_char),
         .next_y(next_char_y)
     );
+
+    assign active = win_active;
 
 endmodule
